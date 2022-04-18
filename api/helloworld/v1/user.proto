@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package helloworld.v1;
+
+option go_package = "kratos-demo/api/helloworld/v1;v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+service User {
+    rpc GetUser(GetUserRequest) returns (UserResponse) {
+        option (google.api.http) = {
+            get: "/v1/user/{id}",
+        };
+    }
+
+    rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/user",
+            body: "*"
+        };
+    }
+    rpc UpdateUser(UpdateUserRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            put: "/v1/user/{id}",
+            body: "*"
+        };
+    }
+    rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/v1/user/{id}",
+        };
+    }
+    rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+        option (google.api.http) = {
+            get: "/v1/users",
+        };
+    }
+    rpc CreateOrderForUser(CreateOrderForUserRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/user/{user_id}/order",
+            body: "*",
+        };
+    }
+    rpc DeleteOrderForUser(DeleteOrderForUserRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/v1/user/{user_id}/order/{order_id}",
+        };
+    }
+}
+message UserResponse{
+    string id = 1;
+    string name = 2;
+    string phone = 3;
+    repeated OrderItem order = 4;
+}
+message OrderItem {
+    string orderNo = 1;
+}
+
+message CreateUserRequest {
+    string name = 1;
+    string phone = 2;
+    repeated OrderItem order = 3;
+}
+
+message GetUserRequest{
+    string id = 1;
+}
+
+message UpdateUserRequest{
+    string id = 1;
+    string name = 2;
+    string phone = 3;
+    repeated OrderItem order = 4;
+}
+
+message ListUsersRequest{
+    int64 offset = 1;
+    int64 limit = 2;
+    string name =3;
+}
+message ListUsersResponse{
+    repeated UserResponse users = 1;
+    int64 total = 2;
+}
+message CreateOrderForUserRequest{
+    string user_id = 1;
+    string orderNo = 2;
+}
+message DeleteUserRequest{
+    string id = 1;
+}
+message DeleteOrderForUserRequest{
+    string user_id = 1;
+    string order_id = 2;
+}
