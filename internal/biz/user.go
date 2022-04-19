@@ -19,6 +19,7 @@ type User struct {
 }
 type UserRepo interface {
 	Save(context.Context, *User) (*User, error)
+	CreateUser(context.Context, *User) error
 }
 
 // UserUsecase is a Greeter usecase.

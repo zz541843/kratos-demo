@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/zz541843/go-utils"
 	"gorm.io/gorm"
 	"kratos-demo/internal/biz"
 )
@@ -28,6 +29,18 @@ type userRepo struct {
 
 func (u userRepo) Save(ctx context.Context, user *biz.User) (*biz.User, error) {
 	return user, nil
+}
+
+// CreateUser 创建用户 by userRepo
+func (u userRepo) CreateUser(ctx context.Context, in *biz.User) (err error) {
+	user := User{}
+	newCopy := jz.NewCopy(jz.CopyConfig{})
+	err = newCopy.StructCopy(&user, in)
+	if err != nil {
+		return err
+	}
+	u.data.db.WithContext(ctx).Create(&user)
+	return nil
 }
 
 // NewUserRepo .
