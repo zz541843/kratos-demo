@@ -5,6 +5,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"kratos-demo/internal"
 
 	v1 "kratos-demo/api/helloworld/v1"
 	"kratos-demo/internal/biz"
@@ -22,19 +23,24 @@ func NewUserService(uc *biz.UserUsecase) *UserService {
 	return &UserService{uc: uc}
 }
 
-func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.UserResponse, error) {
-	user, err := u.uc.CreateUser(ctx, &biz.User{
-		Name: "张三",
-	})
+func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (out *v1.UserResponse, err error) {
+	user, err := u.uc.GetUserById(ctx, in.Id)
+	err = internal.Copier.StructCopy(&out, user)
+	return
+}
+
+func (u *UserService) CreateUser(ctx context.Context, in *v1.CreateUserRequest) (*emptypb.Empty, error) {
+	bizIn := biz.User{}
+
+	err := internal.Copier.StructCopy(&bizIn, in)
 	if err != nil {
 		return nil, err
 	}
-	return &v1.UserResponse{
-		Name: user.Name,
-	}, nil
-}
-func (u *UserService) CreateUser(context.Context, *v1.CreateUserRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+	err = u.uc.CreateUser(ctx, &bizIn)
+	if err != nil {
+		return nil, err
+	}
+	return nil, err
 }
 func (u *UserService) UpdateUser(context.Context, *v1.UpdateUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")

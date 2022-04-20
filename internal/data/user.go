@@ -2,9 +2,10 @@ package data
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/zz541843/go-utils"
 	"gorm.io/gorm"
+	"kratos-demo/internal"
 	"kratos-demo/internal/biz"
 )
 
@@ -27,15 +28,26 @@ type userRepo struct {
 	log  *log.Helper
 }
 
-func (u userRepo) Save(ctx context.Context, user *biz.User) (*biz.User, error) {
-	return user, nil
+func (u userRepo) GerUserById(ctx context.Context, u2 uint32) (out *biz.User, err error) {
+	user := &User{}
+	u.data.db.First(user, u2)
+	err = internal.Copier.StructCopy(out, user)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	return
+}
+
+func (u userRepo) DelUserById(ctx context.Context, u2 uint32) error {
+	//TODO implement me
+	panic("implement me")
 }
 
 // CreateUser 创建用户 by userRepo
 func (u userRepo) CreateUser(ctx context.Context, in *biz.User) (err error) {
 	user := User{}
-	newCopy := jz.NewCopy(jz.CopyConfig{})
-	err = newCopy.StructCopy(&user, in)
+	err = internal.Copier.StructCopy(&user, in)
 	if err != nil {
 		return err
 	}

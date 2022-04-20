@@ -49,7 +49,7 @@ service User {
     }
 }
 message UserResponse{
-    string id = 1;
+    uint32 id = 1;
     string name = 2;
     string phone = 3;
     repeated OrderItem order = 4;
@@ -65,11 +65,11 @@ message CreateUserRequest {
 }
 
 message GetUserRequest{
-    string id = 1;
+    uint32 id = 1;
 }
 
 message UpdateUserRequest{
-    string id = 1;
+    uint32 id = 1;
     string name = 2;
     string phone = 3;
     repeated OrderItem order = 4;
@@ -85,13 +85,13 @@ message ListUsersResponse{
     int64 total = 2;
 }
 message CreateOrderForUserRequest{
-    string user_id = 1;
+    uint32 user_id = 1;
     string orderNo = 2;
 }
 message DeleteUserRequest{
-    string id = 1;
+    uint32 id = 1;
 }
 message DeleteOrderForUserRequest{
-    string user_id = 1;
-    string order_id = 2;
+    uint32 user_id = 1;
+    uint32 order_id = 2;
 }

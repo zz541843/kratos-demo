@@ -7,6 +7,8 @@ import (
 	v1 "kratos-demo/api/helloworld/v1"
 	"kratos-demo/internal/conf"
 	"kratos-demo/internal/service"
+
+	"github.com/go-kratos/swagger-api/openapiv2"
 )
 
 // NewHTTPServer new a HTTP server.
@@ -28,5 +30,7 @@ func NewHTTPServer(c *conf.Server, user *service.UserService, logger log.Logger)
 	srv := http.NewServer(opts...)
 	v1.RegisterUserHTTPServer(srv, user)
 	//v1.RegisterGreeterHTTPServer(srv, user)
+	openAPIhandler := openapiv2.NewHandler()
+	srv.HandlePrefix("/q/", openAPIhandler)
 	return srv
 }

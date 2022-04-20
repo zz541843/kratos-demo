@@ -18,8 +18,9 @@ type User struct {
 	Orders []*Order
 }
 type UserRepo interface {
-	Save(context.Context, *User) (*User, error)
 	CreateUser(context.Context, *User) error
+	GerUserById(context.Context, uint32) (*User, error)
+	DelUserById(context.Context, uint32) error
 }
 
 // UserUsecase is a Greeter usecase.
@@ -34,7 +35,10 @@ func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 }
 
 // CreateUser creates a Greeter, and returns the new Greeter.
-func (uc *UserUsecase) CreateUser(ctx context.Context, g *User) (*User, error) {
-	uc.log.WithContext(ctx).Infof("Createuser: %v", g.Name)
-	return uc.repo.Save(ctx, g)
+func (uc *UserUsecase) CreateUser(ctx context.Context, g *User) (err error) {
+	return uc.repo.CreateUser(ctx, g)
+}
+
+func (uc *UserUsecase) GetUserById(ctx context.Context, id uint32) (g *User, err error) {
+	return uc.repo.GerUserById(ctx, id)
 }
