@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/go-kratos/kratos/v2/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -24,9 +25,10 @@ func NewUserService(uc *biz.UserUsecase) *UserService {
 }
 
 func (u *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (out *v1.UserResponse, err error) {
+	out = &v1.UserResponse{}
 	user, err := u.uc.GetUserById(ctx, in.Id)
-	err = internal.Copier.StructCopy(&out, user)
-	return
+	err = internal.Copier.StructCopy(out, *user)
+	return out, errors.New(300, "321", "213")
 }
 
 func (u *UserService) CreateUser(ctx context.Context, in *v1.CreateUserRequest) (*emptypb.Empty, error) {

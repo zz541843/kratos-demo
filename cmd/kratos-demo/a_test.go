@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
-	jz "github.com/zz541843/go-utils"
+	"github.com/go-kratos/kratos/v2/errors"
 	"testing"
+
+	gerrors "errors"
 )
 
 type Option func(*options)
@@ -12,49 +14,82 @@ type options struct {
 	Name string
 }
 
+type CustomErr struct {
+	Message string
+	err     error
+}
+
+func (c *CustomErr) Error() string {
+	return "custom error:" + c.Message
+}
+func (c *CustomErr) Unwrap() error {
+	return c.err
+}
+func (c *CustomErr) Is(target error) bool {
+	_, ok := target.(*CustomErr)
+	if !ok {
+		return false
+	}
+	return target.(*CustomErr).Message == c.Message
+}
 func TestName(t *testing.T) {
-	var a Option
-	var b Option
-
-	o := New(a, b, func(o *options) {
-		o.Name = "李四"
+	c := CustomErr{
+		Message: "test",
+		err:     fmt.Errorf("asdf"),
+	}
+	err := gerrors.Unwrap(&c)
+	fmt.Println(err)
+}
+func Test2(t *testing.T) {
+	var e error
+	var b Error
+	b = "1"
+	e = fmt.Errorf("asdf:%w", &CustomErr{
+		Message: "123",
+		err:     b,
 	})
-	fmt.Println(o.Name)
-}
-func New(opts ...Option) *options {
-	o := options{
-		Name: "张三",
+	if gerrors.As(e, &b) {
+		fmt.Println(e.(*Error).Error())
+		fmt.Println(e.Error())
+	} else {
+		fmt.Println(213)
 	}
-	for _, opt := range opts {
-		opt(&o)
-	}
-	return &o
+	/*var b Error
+	b = "1"
+	fmt.Println(gerrors.As(e, &b))*/
 }
 
-type A struct {
-	Name string
-	DD   D
-}
-type B struct {
-	Name string
-	DD   D
-}
-type C struct {
-}
-type D struct {
+type Error string
+
+func (e Error) Error() string { return string(e) }
+
+type HTTPError struct {
+	Errors map[string][]string `json:"errors"`
+
+	Code int `json:"-"`
 }
 
-func Test3(t *testing.T) {
-	a := A{
-		Name: "张三",
+func (e *HTTPError) Error() string {
+	return fmt.Sprintf("HTTPError: %d", e.Code)
+}
+func Test4(t *testing.T) {
+	FromError(&HTTPError{
+		Errors: map[string][]string{
+			"name": {"name is required"},
+		},
+		Code: 401,
+	})
+}
+func FromError(err error) *HTTPError {
+	if err == nil {
+		return nil
 	}
-	b := B{
-		Name: "李四",
+	se := &options{}
+	b := &se
+	c := &b
+	fmt.Println(c)
+	if errors.As(err, &se) {
+		fmt.Println(se)
 	}
-	newCopy := jz.NewCopy()
-	err := newCopy.StructCopy(&a, b)
-	if err != nil {
-		return
-	}
-
+	return nil
 }

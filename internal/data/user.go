@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"kratos-demo/internal"
 	"kratos-demo/internal/biz"
+	"reflect"
 )
 
 type User struct {
@@ -29,9 +30,13 @@ type userRepo struct {
 }
 
 func (u userRepo) GerUserById(ctx context.Context, u2 uint32) (out *biz.User, err error) {
+	out = &biz.User{}
+	if reflect.TypeOf(out).Kind() != reflect.Ptr || reflect.TypeOf(out).Elem().Kind() != reflect.Struct {
+		fmt.Println(reflect.TypeOf(out).Kind())
+	}
 	user := &User{}
 	u.data.db.First(user, u2)
-	err = internal.Copier.StructCopy(out, user)
+	err = internal.Copier.StructCopy(out, *user)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err

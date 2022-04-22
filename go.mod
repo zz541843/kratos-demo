@@ -6,7 +6,8 @@ require (
 	github.com/go-kratos/kratos/v2 v2.2.1
 	github.com/go-kratos/swagger-api v1.0.1
 	github.com/google/wire v0.5.0
-	github.com/zz541843/go-utils v0.0.0-20220420074857-c29d5410249e
+	github.com/gorilla/handlers v1.5.1
+	github.com/zz541843/go-utils v0.0.0-20220422031327-ee36ab8ea620
 	google.golang.org/genproto v0.0.0-20220222213610-43724f9ea8cf
 	google.golang.org/grpc v1.44.0
 	google.golang.org/protobuf v1.28.0
@@ -16,6 +17,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-kratos/grpc-gateway/v2 v2.5.1-0.20210811062259-c92d36e434b1 // indirect

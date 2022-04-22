@@ -77,3 +77,11 @@ init2:
 	go get github.com/go-kratos/kratos/cmd/kratos/v2@latest
 	go get github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest
 	go get github.com/google/gnostic/cmd/protoc-gen-openapi@latest
+
+# generate errors code
+errors:
+	protoc --proto_path=. \
+               --proto_path=./third_party \
+               --go_out=paths=source_relative:. \
+               --go-errors_out=paths=source_relative:. \
+               $(API_PROTO_FILES)
